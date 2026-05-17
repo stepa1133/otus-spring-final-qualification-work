@@ -1,0 +1,85 @@
+# 1. Указание версии формата (устарело, но часто встречается)
+version: '3.8'
+
+# 2. Секция со всеми сервисами (контейнерами)
+services:
+
+  # 3. Имя сервиса — может быть любым, используется внутри Docker Compose
+  postgres:
+
+    # 4. Какой образ скачать с Docker Hub
+    #    postgres — название, 16 — версия, alpine — облегчённый Linux внутри
+    image: postgres:16-alpine
+
+    # 5. Фиксированное имя контейнера (удобно обращаться командой docker exec)
+    container_name: otus-postgres
+
+    # 6. Политика перезапуска
+    #    unless-stopped — перезапускать всегда, кроме случая, когда остановили вручную
+    restart: unless-stopped
+
+    # 7. Переменные окружения — PostgreSQL читает их при первом запуске
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres_db         # база, которая создастся автоматически
+
+    # 8. Проброс портов
+    #    "порт_на_хосте:порт_в_контейнере"
+    #    5432 — стандартный порт PostgreSQL
+    ports:
+      - "5432:5432"
+
+    # 9. Монтирование томов (папок)
+    volumes:
+      # 9.1 Именованный том — данные БД сохраняются на хосте, не теряются при down
+      - postgres_data:/var/lib/postgresql/data
+
+      # 9.2 Bind mount — твоя локальная папка init связана с папкой в контейнере
+      #     Всё, что лежит в ./init, выполнится при первой инициализации БД
+      - ./init:/docker-entrypoint-initdb.d
+
+    # 10. Проверка здоровья контейнера
+    #     Другие сервисы (потом) могут ждать, пока БД реально готова принимать запросы
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d postgres_db"]
+      interval: 5s                                 # проверять каждые 5 секунд
+      timeout: 5s                                  # ждать ответа не более 5 секунд
+      retries: 5                                   # если 5 раз подряд ошибка — считать мёртвым
+
+  # ============================================
+  # НОВЫЙ СЕРВИС — duty-schedule-service
+  # ============================================
+  duty-schedule-service:
+
+    # Собираем образ из Dockerfile в папке сервиса
+    build:
+      context: ./duty-schedule-service    # путь к папке с Dockerfile
+      dockerfile: Dockerfile              # имя Dockerfile (необязательно, если просто Dockerfile)
+
+    # Имя контейнера
+    container_name: duty-schedule-container
+
+    # Переменные окружения для подключения к БД
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/duty_schedule_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+    # Проброс порта приложения
+    ports:
+      - "8080:8080"
+
+    # Ждём, пока postgres будет здоров
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    # Политика перезапуска
+    restart: unless-stopped
+
+# 11. Секция с описанием именованных томов
+volumes:
+  postgres_data:          # имя из пункта 9.1
+    driver: local         # хранить на локальном диске (по умолчанию)
