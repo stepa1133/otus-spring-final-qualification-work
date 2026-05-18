@@ -4,7 +4,9 @@ version: '3.8'
 # 2. Секция со всеми сервисами (контейнерами)
 services:
 
-  # 3. Имя сервиса — может быть любым, используется внутри Docker Compose
+  # ============================================
+  # POSTGRES — общая база данных
+  # ============================================
   postgres:
 
     # 4. Какой образ скачать с Docker Hub
@@ -48,14 +50,14 @@ services:
       retries: 5                                   # если 5 раз подряд ошибка — считать мёртвым
 
   # ============================================
-  # НОВЫЙ СЕРВИС — duty-schedule-service
+  # DUTY-SCHEDULE-SERVICE — основной сервис бизнес-логики
   # ============================================
   duty-schedule-service:
 
     # Собираем образ из Dockerfile в папке сервиса
     build:
-      context: ./duty-schedule-service    # путь к папке с Dockerfile
-      dockerfile: Dockerfile              # имя Dockerfile (необязательно, если просто Dockerfile)
+      context: ./duty-schedule-service
+      dockerfile: Dockerfile
 
     # Имя контейнера
     container_name: duty-schedule-container
@@ -70,6 +72,73 @@ services:
     # Проброс порта приложения
     ports:
       - "8080:8080"
+
+    # Ждём, пока postgres будет здоров
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    # Политика перезапуска
+    restart: unless-stopped
+
+  # ============================================
+  # SECURITY-SERVICE — сервис аутентификации и авторизации
+  # ============================================
+  security-service:
+
+    # Собираем образ из Dockerfile в папке сервиса
+    build:
+      context: ./security-service
+      dockerfile: Dockerfile
+
+    # Имя контейнера
+    container_name: security-container
+
+    # Переменные окружения для подключения к БД
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/security_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # Порт самого сервиса (если нужно переопределить)
+      SERVER_PORT: "8080"
+
+    # Проброс порта приложения (внешний 8081 → внутренний 8080)
+    ports:
+      - "8081:8080"
+
+    # Ждём, пока postgres будет здоров
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    # Политика перезапуска
+    restart: unless-stopped
+
+  # ============================================
+  # NOTIFICATION-SERVICE — сервис уведомлений
+  # ============================================
+  notification-service:
+
+    # Собираем образ из Dockerfile в папке сервиса
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+
+    # Имя контейнера
+    container_name: notification-container
+
+    # Переменные окружения для подключения к БД
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SERVER_PORT: "8080"
+
+    # Проброс порта приложения (внешний 8082 → внутренний 8080)
+    ports:
+      - "8082:8080"
 
     # Ждём, пока postgres будет здоров
     depends_on:
