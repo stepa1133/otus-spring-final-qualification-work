@@ -1,8 +1,13 @@
--- Основная база service1_db уже создана через POSTGRES_DB
--- Создаём дополнительные базы для других микросервисов
+-- База для основного сервиса
+CREATE DATABASE duty_schedule_db;
 
-CREATE DATABASE duty_schedule_service_db;
+-- База для security-сервиса
+CREATE DATABASE security_db;
 
+-- База для сервиса нотификаций
+CREATE DATABASE notification_db;
 
--- Даём права пользователю otus на все базы
-GRANT ALL PRIVILEGES ON DATABASE duty_schedule_service_db TO otus;
+-- Даём права пользователю admin на все базы
+GRANT ALL PRIVILEGES ON DATABASE duty_schedule_db TO admin;
+GRANT ALL PRIVILEGES ON DATABASE security_db TO admin;
+GRANT ALL PRIVILEGES ON DATABASE notification_db TO admin;
