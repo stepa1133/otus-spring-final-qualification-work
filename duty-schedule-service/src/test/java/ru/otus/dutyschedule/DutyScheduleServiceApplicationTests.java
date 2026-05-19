@@ -1,4 +1,4 @@
-package ru.otus.duty_schedule_service;
+package ru.otus.dutyschedule;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
