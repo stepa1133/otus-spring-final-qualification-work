@@ -1,26 +1,31 @@
 spring:
   application:
     name: duty-schedule-service
-
   datasource:
     url: jdbc:postgresql://localhost:5432/duty_schedule_db
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
-      ddl-auto: update          # создаёт/обновляет таблицы автоматически
-    show-sql: true              # показывать SQL в логах (для отладки)
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
-        format_sql: true        # красивый вывод SQL
+        format_sql: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
 
 server:
-  port: 8085
+  port: 8080
 
-# Логирование
 logging:
   level:
     ru.otus.dutyschedule: DEBUG
     org.hibernate.SQL: DEBUG
+
+#  flyway:
+#    enabled: false
+##    enabled: true
+##    baseline-on-migrate: true
