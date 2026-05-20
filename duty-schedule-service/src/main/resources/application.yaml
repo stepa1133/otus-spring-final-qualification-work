@@ -1,6 +1,26 @@
 spring:
   application:
     name: duty-schedule-service
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/duty_schedule_db
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update          # создаёт/обновляет таблицы автоматически
+    show-sql: true              # показывать SQL в логах (для отладки)
+    properties:
+      hibernate:
+        format_sql: true        # красивый вывод SQL
+
+server:
+  port: 8085
+
+# Логирование
+logging:
+  level:
+    ru.otus.dutyschedule: DEBUG
+    org.hibernate.SQL: DEBUG

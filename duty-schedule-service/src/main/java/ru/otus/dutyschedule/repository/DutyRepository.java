@@ -28,4 +28,10 @@ public interface DutyRepository extends JpaRepository<Duty, Long> {
 
     /** Кто дежурит в определённый день из конкретного отдела */
     List<Duty> findAllByDateAndDepartment(LocalDate date, Department department);
+
+    /** Подсчитать количество дежурств сотрудника */
+    long countByEmployee(Employee employee);
+
+    /** Подсчитать дежурства сотрудника за период */
+    long countByEmployeeAndDateBetween(Employee employee, LocalDate from, LocalDate to);
 }

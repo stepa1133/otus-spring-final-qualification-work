@@ -55,3 +55,49 @@ Response — только то, что нужно клиенту, никаких
 Вместо целых объектов — departmentName вместо Department department
 
 Вместо ID — осмысленные имена (employeeFullName вместо employeeId)
+
+
+
+Исключение	HTTP-статус	Когда
+DepartmentNotFoundException	404	Отдел не найден
+EmployeeNotFoundException	404	Сотрудник не найден
+DutyGroupNotFoundException	404	График не найден
+NotEnoughEmployeesException	409	Нельзя составить график
+DuplicateEmailException	409	Email уже занят
+MethodArgumentNotValidException	400	Не прошло @Valid
+Exception (общий)	500	Что-то пошло не так
+
+DutyGroupServiceImpl.create() — создаёт пустую группу (черновик)
+DutyGroupServiceImpl.generateSchedule() — вызывает генератор
+↓
+DutyScheduleGeneratorImpl.generate()
+- На каждый день периода:
+- Для каждого особого отдела → найти 1 сотрудника
+- Для всех обычных отделов → найти 1 сотрудника
+- Исключить отсутствующих
+- Выбрать того, кто меньше дежурил
+↓
+Сохраняем список Duty в DutyGroup
+
+
+
+Сводка API
+Метод	URL	Кто	Что делает
+POST	/api/departments	CHIEF	Создать отдел
+PUT	/api/departments/{id}	CHIEF	Обновить отдел
+GET	/api/departments	Все	Список отделов
+GET	/api/departments/special	Все	Особые отделы
+PATCH	/api/departments/{id}/special	CHIEF	Переключить особость
+DELETE	/api/departments/{id}	CHIEF	Удалить отдел
+POST	/api/employees	CHIEF	Добавить сотрудника
+GET	/api/employees	Все	Список сотрудников
+GET	/api/employees/{id}	Все	Сотрудник по ID
+DELETE	/api/employees/{id}	CHIEF	Уволить
+POST	/api/absences	CHIEF	Добавить отсутствие
+GET	/api/absences/employee/{id}	Все	Отсутствия сотрудника
+POST	/api/duty-groups	CHIEF	Создать график
+POST	/api/duty-groups/{id}/generate	CHIEF	Сгенерировать график
+POST	/api/duty-groups/{id}/reschedule	CHIEF	Перегенерировать
+GET	/api/duty-groups/{id}	Все	Посмотреть график
+PATCH	/api/duty-groups/{id}/activate	CHIEF	Активировать
+PUT	/api/duties/{id}/comment	EMPLOYEE	Оставить заявку на перенос
