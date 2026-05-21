@@ -101,3 +101,29 @@ POST	/api/duty-groups/{id}/reschedule	CHIEF	Перегенерировать
 GET	/api/duty-groups/{id}	Все	Посмотреть график
 PATCH	/api/duty-groups/{id}/activate	CHIEF	Активировать
 PUT	/api/duties/{id}/comment	EMPLOYEE	Оставить заявку на перенос
+
+Built-In Commands
+help: Display help about available commands
+stacktrace: Display the full stacktrace of the last error.
+clear: Clear the shell screen.
+quit, exit: Exit the shell.
+history: Display or save the history of previously run commands
+version: Show version info
+script: Read and execute commands from a file.
+
+Department Commands
+department-list: Список всех активных отделов
+department-create: Создать новый отдел
+department-special: Сделать отдел особым или обычным
+
+Duty Group Commands
+schedule-create: Создать новый график дежурств            schedule-create --name "Март 2026" --startDate 2026-03-01 --endDate 2026-03-31 --chiefId 1
+schedule-generate: Сгенерировать дежурства для графика
+schedule-list: Список всех графиков
+schedule-view: Посмотреть график дежурств
+
+Employee Commands
+employee-by-department: Сотрудники отдела
+employee-create: Добавить нового сотрудника
+employee-list: Список всех активных сотрудников
+

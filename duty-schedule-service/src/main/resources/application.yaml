@@ -1,6 +1,9 @@
 spring:
   application:
     name: duty-schedule-service
+  shell:
+    interactive:
+      enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/duty_schedule_db
     username: admin
