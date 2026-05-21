@@ -1,4 +1,4 @@
-package ru.otus.duty_schedule_service;
+package ru.otus.dutyschedule;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
