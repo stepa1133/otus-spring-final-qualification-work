@@ -1,0 +1,58 @@
+<div id="schedules-page">
+    <h2>Управление графиками дежурств</h2>
+
+    <div id="schedules-message"></div>
+
+    <!-- Форма создания графика -->
+    <div class="card mb-4">
+        <div class="card-header">Создать новый график</div>
+        <div class="card-body">
+            <form id="schedule-form">
+                <div class="mb-3">
+                    <label for="schedule-name" class="form-label">Название графика</label>
+                    <input type="text" class="form-control" id="schedule-name" placeholder="Март 2026" required>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="schedule-start" class="form-label">Дата начала</label>
+                        <input type="date" class="form-control" id="schedule-start" required>
+                    </div>
+                    <div class="col">
+                        <label for="schedule-end" class="form-label">Дата окончания</label>
+                        <input type="date" class="form-control" id="schedule-end" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="schedule-chief" class="form-label">Начальник (создатель графика)</label>
+                    <select class="form-control" id="schedule-chief" required>
+                        <option value="">Загрузка...</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Создать график</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Список графиков -->
+    <div class="card">
+        <div class="card-header">Графики дежурств</div>
+        <div class="card-body">
+            <div id="schedules-list">Загрузка...</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для просмотра графика -->
+    <div class="modal fade" id="scheduleModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleModalTitle">График</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="scheduleModalBody">
+                    Загрузка...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

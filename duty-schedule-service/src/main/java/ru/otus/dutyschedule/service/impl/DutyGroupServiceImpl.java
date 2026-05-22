@@ -90,8 +90,8 @@ public class DutyGroupServiceImpl implements DutyGroupService {
 
     @Override
     public List<DutyGroupResponse> getAllActive() {
-        List<DutyGroupStatus> activeStatuses = List.of(DutyGroupStatus.DRAFT, DutyGroupStatus.ACTIVE);
-        return dutyGroupRepository.findAllByStatusInOrderByStartDateDesc(activeStatuses)
+        List<DutyGroupStatus> allStatuses = List.of(DutyGroupStatus.DRAFT, DutyGroupStatus.ACTIVE);
+        return dutyGroupRepository.findAllByStatusInOrderByStartDateDesc(allStatuses)
                 .stream()
                 .map(dutyGroupMapper::toResponse)
                 .toList();
@@ -99,15 +99,10 @@ public class DutyGroupServiceImpl implements DutyGroupService {
 
     @Override
     @Transactional
-    public DutyGroupResponse activate(Long id) {
+    public void delete(Long id) {
         DutyGroup dutyGroup = findEntityById(id);
-        if (dutyGroup.getDuties().isEmpty()) {
-            throw new IllegalStateException("Нельзя активировать график без дежурств. Сначала сгенерируйте.");
-        }
-        dutyGroup.setStatus(DutyGroupStatus.ACTIVE);
-        dutyGroupRepository.save(dutyGroup);
-        log.info("График '{}' активирован", dutyGroup.getName());
-        return dutyGroupMapper.toResponse(dutyGroup);
+        dutyGroupRepository.delete(dutyGroup);
+        log.info("График '{}' удалён", dutyGroup.getName());
     }
 
     @Override

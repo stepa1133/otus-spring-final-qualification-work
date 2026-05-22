@@ -1,9 +1,6 @@
 spring:
   application:
     name: duty-schedule-service
-  shell:
-    interactive:
-      enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/duty_schedule_db
     username: admin
@@ -11,24 +8,30 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  shell:
+    interactive:
+      enabled: true
 
 server:
   port: 8080
+  error:
+    include-stacktrace: always
+    include-message: always
 
 logging:
+  file:
+    path: logs
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      max-file-size: 10MB
+      max-history: 7
   level:
     ru.otus.dutyschedule: DEBUG
     org.hibernate.SQL: DEBUG
-
-#  flyway:
-#    enabled: false
-##    enabled: true
-##    baseline-on-migrate: true
+    root: WARN
