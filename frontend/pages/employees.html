@@ -1,0 +1,46 @@
+<div id="employees-page">
+    <h2>Управление сотрудниками</h2>
+
+    <div id="employees-message"></div>
+
+    <!-- Форма добавления сотрудника -->
+    <div class="card mb-4">
+        <div class="card-header">Добавить нового сотрудника</div>
+        <div class="card-body">
+            <form id="employee-form">
+                <div class="mb-3">
+                    <label for="emp-fullname" class="form-label">ФИО</label>
+                    <input type="text" class="form-control" id="emp-fullname" required>
+                </div>
+                <div class="mb-3">
+                    <label for="emp-email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="emp-email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="emp-password" class="form-label">Пароль</label>
+                    <input type="password" class="form-control" id="emp-password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="emp-department" class="form-label">Отдел</label>
+                    <select class="form-control" id="emp-department" required>
+                        <option value="">Загрузка...</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Добавить сотрудника</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Список сотрудников -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            Список сотрудников
+            <select class="form-select w-auto" id="employee-filter">
+                <option value="all">Все отделы</option>
+            </select>
+        </div>
+        <div class="card-body">
+            <div id="employees-list">Загрузка...</div>
+        </div>
+    </div>
+</div>

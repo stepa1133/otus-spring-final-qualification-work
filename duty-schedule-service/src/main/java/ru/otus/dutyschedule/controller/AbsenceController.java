@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.dutyschedule.dto.request.AbsenceRequest;
+import ru.otus.dutyschedule.dto.response.AbsenceResponse;
+import ru.otus.dutyschedule.mapper.AbsenceMapper;
 import ru.otus.dutyschedule.model.Absence;
 import ru.otus.dutyschedule.service.AbsenceService;
 
@@ -20,17 +22,23 @@ import java.util.List;
 public class AbsenceController {
 
     private final AbsenceService absenceService;
+    private final AbsenceMapper absenceMapper;
 
     /** Зарегистрировать отсутствие (больничный/отпуск/отгул) */
     @PostMapping
-    public ResponseEntity<Absence> create(@Valid @RequestBody AbsenceRequest request) {
+    public ResponseEntity<AbsenceResponse> create(@Valid @RequestBody AbsenceRequest request) {
+        Absence absence = absenceService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(absenceService.create(request));
+                .body(absenceMapper.toResponse(absence));
     }
 
     /** Получить все отсутствия сотрудника */
     @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<Absence>> getByEmployee(@PathVariable Long employeeId) {
-        return ResponseEntity.ok(absenceService.getByEmployee(employeeId));
+    public ResponseEntity<List<AbsenceResponse>> getByEmployee(@PathVariable Long employeeId) {
+        List<AbsenceResponse> absences = absenceService.getByEmployee(employeeId)
+                .stream()
+                .map(absenceMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(absences);
     }
 }

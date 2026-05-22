@@ -1,0 +1,32 @@
+<div id="departments-page">
+    <h2>Управление отделами</h2>
+
+    <!-- Сообщения -->
+    <div id="departments-message"></div>
+
+    <!-- Форма создания отдела -->
+    <div class="card mb-4">
+        <div class="card-header">Создать новый отдел</div>
+        <div class="card-body">
+            <form id="department-form">
+                <div class="mb-3">
+                    <label for="dept-name" class="form-label">Название отдела</label>
+                    <input type="text" class="form-control" id="dept-name" required>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="dept-special">
+                    <label class="form-check-label" for="dept-special">Особый отдел (ежедневный дежурный)</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Список отделов -->
+    <div class="card">
+        <div class="card-header">Список отделов</div>
+        <div class="card-body">
+            <div id="departments-list">Загрузка...</div>
+        </div>
+    </div>
+</div>
