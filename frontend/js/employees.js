@@ -6,24 +6,16 @@ async function loadEmployeesPage() {
     const response = await fetch('pages/employees.html');
     container.innerHTML = await response.text();
 
-    // Загружаем список отделов для выпадающего списка
     await loadDepartmentOptions();
-    // Загружаем список сотрудников
     await loadEmployeesList();
-    // Загружаем отделы в фильтр
     await loadDepartmentFilter();
 
-    // Обработчик формы
     document.getElementById('employee-form').addEventListener('submit', createEmployee);
-    // Обработчик фильтра
     document.getElementById('employee-filter').addEventListener('change', function() {
         loadEmployeesList(this.value);
     });
 }
 
-/**
- * Загрузить отделы в выпадающий список формы.
- */
 async function loadDepartmentOptions() {
     try {
         const departments = await apiRequest('departments');
@@ -37,9 +29,6 @@ async function loadDepartmentOptions() {
     }
 }
 
-/**
- * Загрузить отделы в фильтр.
- */
 async function loadDepartmentFilter() {
     try {
         const departments = await apiRequest('departments');
@@ -53,9 +42,6 @@ async function loadDepartmentFilter() {
     }
 }
 
-/**
- * Загрузить список сотрудников.
- */
 async function loadEmployeesList(departmentId = 'all') {
     try {
         let employees;
@@ -73,7 +59,7 @@ async function loadEmployeesList(departmentId = 'all') {
         }
 
         let html = '<div class="table-responsive"><table class="table table-striped">';
-        html += '<thead><tr><th>ID</th><th>ФИО</th><th>Email</th><th>Отдел</th><th>Роль</th></tr></thead>';
+        html += '<thead><tr><th>ID</th><th>ФИО</th><th>Email</th><th>Отдел</th><th>Роль</th><th>Действия</th></tr></thead>';
         html += '<tbody>';
 
         for (const emp of employees) {
@@ -83,6 +69,9 @@ async function loadEmployeesList(departmentId = 'all') {
             html += `<td>${emp.email}</td>`;
             html += `<td>${emp.departmentName}</td>`;
             html += `<td><span class="badge ${emp.role === 'CHIEF' ? 'bg-primary' : 'bg-secondary'}">${emp.role === 'CHIEF' ? 'Начальник' : 'Сотрудник'}</span></td>`;
+            html += '<td>';
+            html += `<button class="btn btn-sm btn-danger" onclick="deleteEmployee(${emp.id})">Уволить</button>`;
+            html += '</td>';
             html += '</tr>';
         }
 
@@ -93,9 +82,6 @@ async function loadEmployeesList(departmentId = 'all') {
     }
 }
 
-/**
- * Добавить нового сотрудника.
- */
 async function createEmployee(event) {
     event.preventDefault();
 
@@ -118,6 +104,17 @@ async function createEmployee(event) {
         });
         showSuccess('employees-message', `Сотрудник "${fullName}" добавлен`);
         document.getElementById('employee-form').reset();
+        await loadEmployeesList(document.getElementById('employee-filter').value);
+    } catch (error) {
+        showError('employees-message', 'Ошибка: ' + error.message);
+    }
+}
+
+async function deleteEmployee(id) {
+    if (!confirm('Уволить сотрудника?')) return;
+    try {
+        await apiRequest(`employees/${id}`, 'DELETE');
+        showSuccess('employees-message', 'Сотрудник уволен');
         await loadEmployeesList(document.getElementById('employee-filter').value);
     } catch (error) {
         showError('employees-message', 'Ошибка: ' + error.message);

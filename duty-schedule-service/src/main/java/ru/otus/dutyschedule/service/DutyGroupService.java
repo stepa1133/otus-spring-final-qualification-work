@@ -20,11 +20,11 @@ public interface DutyGroupService {
     /** Получить группу со всеми дежурствами */
     DutyGroupResponse getById(Long id);
 
-    /** Все группы (активные + черновики) */
+    /** Все группы */
     List<DutyGroupResponse> getAllActive();
 
-    /** Утвердить группу (DRAFT → ACTIVE) */
-    DutyGroupResponse activate(Long id);
+    /** Удалить график */
+    void delete(Long id);
 
     /** Найти сущность по ID */
     DutyGroup findEntityById(Long id);

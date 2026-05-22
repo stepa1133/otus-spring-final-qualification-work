@@ -9,13 +9,13 @@ import ru.otus.dutyschedule.model.Duty;
 import ru.otus.dutyschedule.model.DutyGroup;
 import ru.otus.dutyschedule.model.Employee;
 import ru.otus.dutyschedule.repository.DepartmentRepository;
-import ru.otus.dutyschedule.repository.DutyRepository;
 import ru.otus.dutyschedule.repository.EmployeeRepository;
 import ru.otus.dutyschedule.service.AbsenceService;
 import ru.otus.dutyschedule.service.DutyScheduleGenerator;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Реализация алгоритма генерации графика дежурств.
@@ -35,8 +35,6 @@ public class DutyScheduleGeneratorImpl implements DutyScheduleGenerator {
     private final DepartmentRepository departmentRepository;
     private final EmployeeRepository employeeRepository;
     private final AbsenceService absenceService;
-    private final DutyRepository dutyRepository;
-
 
     @Override
     public List<Duty> generate(DutyGroup dutyGroup) {
@@ -137,16 +135,14 @@ public class DutyScheduleGeneratorImpl implements DutyScheduleGenerator {
         // Убираем отсутствующих
         List<Employee> available = allEmployees.stream()
                 .filter(emp -> !absenceService.isAbsent(emp, date))
-                .toList();
+                .collect(Collectors.toList());
 
         if (available.isEmpty()) {
             return null;
         }
 
-        // Выбираем того, кто реже всех дежурил (для равномерности)
-        return available.stream()
-                .min(Comparator.comparingLong(this::countPastDuties))
-                .orElse(null);
+        Collections.shuffle(available);
+        return available.get(0);
     }
 
     /**
@@ -161,25 +157,13 @@ public class DutyScheduleGeneratorImpl implements DutyScheduleGenerator {
 
         List<Employee> available = allRegularEmployees.stream()
                 .filter(emp -> !absenceService.isAbsent(emp, date))
-                .toList();
+                .collect(Collectors.toList());
 
         if (available.isEmpty()) {
             return null;
         }
 
-        // Выбираем того, кто реже всех дежурил
-        return available.stream()
-                .min(Comparator.comparingLong(this::countPastDuties))
-                .orElse(null);
-    }
-
-    /**
-     * Посчитать, сколько всего дежурств было у сотрудника.
-     * Чем меньше — тем выше приоритет для нового дежурства.
-     */
-    private long countPastDuties(Employee employee) {
-        // Сколько всего дежурств было у сотрудника
-        // Чем меньше — тем выше приоритет
-        return dutyRepository.countByEmployee(employee);
+        Collections.shuffle(available);
+        return available.get(0);
     }
 }

@@ -12,9 +12,6 @@ async function loadSchedulesPage() {
     document.getElementById('schedule-form').addEventListener('submit', createSchedule);
 }
 
-/**
- * Загрузить начальников в выпадающий список.
- */
 async function loadChiefOptions() {
     try {
         const employees = await apiRequest('employees');
@@ -30,9 +27,6 @@ async function loadChiefOptions() {
     }
 }
 
-/**
- * Загрузить список графиков.
- */
 async function loadSchedulesList() {
     try {
         const groups = await apiRequest('duty-groups');
@@ -62,7 +56,8 @@ async function loadSchedulesList() {
             if (group.duties && group.duties.length === 0) {
                 html += `<button class="btn btn-sm btn-success me-1" onclick="generateSchedule(${group.id})">Сгенерировать</button>`;
             }
-            html += `<button class="btn btn-sm btn-warning" onclick="rescheduleSchedule(${group.id})">Перегенерировать</button>`;
+            html += `<button class="btn btn-sm btn-warning me-1" onclick="rescheduleSchedule(${group.id})">Перегенерировать</button>`;
+            html += `<button class="btn btn-sm btn-danger" onclick="deleteSchedule(${group.id})">Удалить</button>`;
             html += '</td>';
             html += '</tr>';
         }
@@ -74,9 +69,6 @@ async function loadSchedulesList() {
     }
 }
 
-/**
- * Создать новый график.
- */
 async function createSchedule(event) {
     event.preventDefault();
 
@@ -110,9 +102,6 @@ async function createSchedule(event) {
     }
 }
 
-/**
- * Сгенерировать дежурства.
- */
 async function generateSchedule(groupId) {
     try {
         await apiRequest(`duty-groups/${groupId}/generate`, 'POST');
@@ -123,9 +112,6 @@ async function generateSchedule(groupId) {
     }
 }
 
-/**
- * Перегенерировать график.
- */
 async function rescheduleSchedule(groupId) {
     if (!confirm('Перегенерировать график? Все текущие дежурства будут заменены.')) {
         return;
@@ -139,9 +125,17 @@ async function rescheduleSchedule(groupId) {
     }
 }
 
-/**
- * Посмотреть график в модальном окне.
- */
+async function deleteSchedule(groupId) {
+    if (!confirm('Удалить график? Все дежурства будут удалены.')) return;
+    try {
+        await apiRequest(`duty-groups/${groupId}`, 'DELETE');
+        showSuccess('schedules-message', 'График удалён');
+        await loadSchedulesList();
+    } catch (error) {
+        showError('schedules-message', 'Ошибка: ' + error.message);
+    }
+}
+
 async function viewSchedule(groupId) {
     try {
         const group = await apiRequest(`duty-groups/${groupId}`);
@@ -173,7 +167,6 @@ async function viewSchedule(groupId) {
 
         document.getElementById('scheduleModalBody').innerHTML = html;
 
-        // Показать модальное окно
         const modal = new bootstrap.Modal(document.getElementById('scheduleModal'));
         modal.show();
     } catch (error) {
