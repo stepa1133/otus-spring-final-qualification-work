@@ -1,0 +1,10 @@
+package ru.otus.db.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.otus.db.entity.Role;
+
+import java.util.List;
+
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    List<Role> findAll();
+}
