@@ -1,4 +1,9 @@
 spring:
+  info:
+    app:
+      name: "Система управления графиками дежурств"
+      version: "1.0.0"
+      description: "Дипломный проект OTUS Spring"
   application:
     name: duty-schedule-service
   datasource:
@@ -22,6 +27,15 @@ server:
   error:
     include-stacktrace: always
     include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers,env,flyway,beans,mappings
+  endpoint:
+    health:
+      show-details: always
 
 logging:
   file:
