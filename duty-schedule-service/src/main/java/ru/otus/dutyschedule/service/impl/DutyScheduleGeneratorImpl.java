@@ -14,7 +14,9 @@ import ru.otus.dutyschedule.service.AbsenceService;
 import ru.otus.dutyschedule.service.DutyScheduleGenerator;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
