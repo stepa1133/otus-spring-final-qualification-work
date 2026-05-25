@@ -28,6 +28,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#" data-page="schedules">Графики</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-page="employee-dashboard">Сотруднику</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -44,6 +47,7 @@
 <script src="js/employees.js"></script>
 <script src="js/absences.js"></script>
 <script src="js/schedules.js"></script>
+<script src="js/employee-dashboard.js"></script>
 <script>
     document.getElementById('nav-menu').addEventListener('click', function(e) {
         if (e.target.tagName === 'A' && e.target.dataset.page) {
@@ -58,6 +62,8 @@
                 loadAbsencesPage();
             } else if (page === 'schedules') {
                 loadSchedulesPage();
+            } else if (page === 'employee-dashboard') {
+                loadEmployeeDashboardPage();
             } else {
                 document.getElementById('main-content').innerHTML =
                     `<h2>Раздел "${page}" в разработке</h2>`;
