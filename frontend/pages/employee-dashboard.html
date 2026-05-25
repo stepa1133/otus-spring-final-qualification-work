@@ -1,0 +1,40 @@
+<div id="employee-dashboard">
+    <h2>Мои графики дежурств</h2>
+
+    <div id="employee-message"></div>
+
+    <!-- Выбор сотрудника (потом заменим на JWT) -->
+    <div class="card mb-4">
+        <div class="card-header">Выберите сотрудника</div>
+        <div class="card-body">
+            <select class="form-select" id="employee-selector" onchange="loadEmployeeSchedules()">
+                <option value="">Выберите себя из списка</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Список графиков -->
+    <div class="card">
+        <div class="card-header">Графики дежурств</div>
+        <div class="card-body">
+            <div id="employee-schedules-list">
+                <p class="text-muted">Выберите сотрудника для просмотра графиков</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для просмотра графика -->
+    <div class="modal fade" id="employeeScheduleModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="employeeScheduleModalTitle">График</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="employeeScheduleModalBody">
+                    Загрузка...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
