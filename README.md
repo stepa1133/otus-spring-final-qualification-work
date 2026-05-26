@@ -34,3 +34,19 @@ sudo docker compose logs -f notification-service
 
 # Логи всех сервисов
 sudo docker compose logs -f
+
+# Предзаведенные пользователи
+## Админ
+login - admin
+paswd - admin
+role  - ROLE_ADMIN
+
+## Шеф
+login - chief
+paswd - chief
+role  - ROLE_CHIEF
+
+## Раб
+login - empl
+paswd - empl
+role  - ROLE_EMPLOYEE

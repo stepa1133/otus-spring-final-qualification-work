@@ -12,7 +12,7 @@ import ru.otus.service.AuthenticationService;
 import ru.otus.service.RegistrationService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 

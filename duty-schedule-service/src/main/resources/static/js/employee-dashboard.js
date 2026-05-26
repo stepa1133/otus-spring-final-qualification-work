@@ -3,10 +3,21 @@
  */
 async function loadEmployeeDashboardPage() {
     const container = document.getElementById('main-content');
-    const response = await fetch('pages/employee-dashboard.html');
-    container.innerHTML = await response.text();
 
-    await loadEmployeeSelector();
+    try {
+        // Сначала проверяем доступ к API
+        await apiRequest('employees');
+
+        // Только после успешного ответа загружаем HTML
+        const response = await fetch('pages/employee-dashboard.html');
+        container.innerHTML = await response.text();
+
+        // Загружаем данные страницы
+        await loadEmployeeSelector();
+
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /**

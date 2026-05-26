@@ -1,5 +1,35 @@
 // Базовый URL REST API
 const API_URL = 'http://localhost:8080/api';
+const AUTH_URL = 'http://localhost:8081/api/auth';
+
+async function login(username, password) {
+    const response = await fetch(`${AUTH_URL}/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+    });
+
+    if (!response.ok) {
+        throw new Error("Ошибка авторизации");
+    }
+
+    const data = await response.json();
+
+    localStorage.setItem("token", data.token);
+}
+
+function logout() {
+    if (!confirm("Выйти из системы?")) return;
+
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+}
+
+function isAuthenticated() {
+    return !!localStorage.getItem("token");
+}
 
 /**
  * Универсальная функция для запросов к API.
@@ -8,16 +38,16 @@ const API_URL = 'http://localhost:8080/api';
  * @param {object} body - тело запроса (для POST/PUT/PATCH)
  * @returns {Promise} - ответ от сервера
  */
-const JWT = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3OTgwMzM2NiwiaWF0IjoxNzc5ODAzMDY2LCJyb2xlcyI6WyJST0xFX0NISUVGIl19.qNIK1HrvAzDlGCEMBPUUNOpGqImoqKmtEuLcjhMAKQqGh-HJaAQTIZNVVqXQvcTE0_iitBXOJTW7WIY16vY4ZIzVyMXEKL-lutDAg8EyqGvcAuH9wAROpC7FTWR_17k1US8XmYnwSlMPEB-dx1IHPsbi6wHoJ-dpmsQPQ3vwPbJLyOP8HenmZZyvxt2xdw1ooYHKoe-13_Ry9gCg-Zxq1HjZVCM7b9KR-LHtRn0q9hRZ7l7TpwiEtFrzIYVOg6nGY6l0_0Iao5w-O8naKatyZ4d31DXLU2HF_FJv4Lxs1KVV6Ons_ul4BzzQw-6vrHcWckNXNc_LJRsNQf2T-dZtkw";
-
 async function apiRequest(endpoint, method = 'GET', body = null) {
     const url = `${API_URL}/${endpoint}`;
 
+    const token = localStorage.getItem("token");
+
     const options = {
-        method: method,
+        method,
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${JWT}`
+            ...(token && { 'Authorization': `Bearer ${token}` })
         }
     };
 
@@ -25,24 +55,26 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
         options.body = JSON.stringify(body);
     }
 
-    try {
-        const response = await fetch(url, options);
+    const response = await fetch(url, options);
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || `Ошибка ${response.status}`);
-        }
-
-        // Если ответ пустой (например, DELETE)
-        if (response.status === 204) {
-            return null;
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error(`Ошибка API [${method} ${endpoint}]:`, error);
-        throw error;
+// ❗ 401 — не авторизован → login
+    if (response.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "./login.html";
+        return;
     }
+
+    // ❗ 403 — запрещено → заглушка
+    if (response.status === 403) {
+        showAccessDenied();
+        throw new Error("Доступ запрещён");
+    }
+
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+        throw new Error(data?.message || `Ошибка ${response.status}`);
+    }
+    return data;
 }
 
 /**
@@ -73,4 +105,19 @@ function showSuccess(containerId, message) {
             </div>
         `;
     }
+}
+
+function showAccessDenied() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+            <div class="text-center">
+                <h1>🚫</h1>
+                <h3>У вас нет прав для просмотра страницы</h3>
+                <p class="text-muted">Обратитесь к администратору</p>
+                <button class="btn btn-primary mt-3" onclick="window.location.href='index.html'">
+                    На главную
+                </button>
+            </div>
+        </div>
+    `;
 }

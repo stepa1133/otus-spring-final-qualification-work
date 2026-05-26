@@ -5,15 +5,24 @@
 async function loadDepartmentsPage() {
     const container = document.getElementById('main-content');
 
-    // Загружаем HTML-шаблон
-    const response = await fetch('pages/departments.html');
-    container.innerHTML = await response.text();
+    try {
+        // Сначала проверяем доступ
+        await apiRequest('departments');
 
-    // Загружаем список отделов
-    await loadDepartmentsList();
+        // Только потом грузим страницу
+        const response = await fetch('pages/departments.html');
+        container.innerHTML = await response.text();
 
-    // Вешаем обработчик на форму
-    document.getElementById('department-form').addEventListener('submit', createDepartment);
+        // Теперь уже загружаем данные
+        await loadDepartmentsList();
+
+        // Вешаем обработчик
+        document
+            .getElementById('department-form')
+            .addEventListener('submit', createDepartment);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /**

@@ -10,9 +10,7 @@ import ru.otus.dutyschedule.config.JwtPublicKeyProperties;
 @EnableFeignClients
 @EnableConfigurationProperties(JwtPublicKeyProperties.class)
 public class DutyScheduleServiceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(DutyScheduleServiceApplication.class, args);
 	}
-
 }

@@ -76,7 +76,7 @@ services:
         condition: service_healthy
 
     # Политика перезапуска
-    restart: unless-stopped
+    restart: no
 
   # ============================================
   # SECURITY-SERVICE — сервис аутентификации и авторизации
@@ -110,7 +110,7 @@ services:
         condition: service_healthy
 
     # Политика перезапуска
-    restart: unless-stopped
+    restart: no
 
   # ============================================
   # NOTIFICATION-SERVICE — сервис уведомлений

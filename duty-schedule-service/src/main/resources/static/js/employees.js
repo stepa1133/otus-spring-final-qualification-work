@@ -3,17 +3,36 @@
  */
 async function loadEmployeesPage() {
     const container = document.getElementById('main-content');
-    const response = await fetch('pages/employees.html');
-    container.innerHTML = await response.text();
 
-    await loadDepartmentOptions();
-    await loadEmployeesList();
-    await loadDepartmentFilter();
+    try {
+        // Проверяем ВСЕ нужные API заранее
+        await Promise.all([
+            apiRequest('employees'),
+            apiRequest('departments')
+        ]);
 
-    document.getElementById('employee-form').addEventListener('submit', createEmployee);
-    document.getElementById('employee-filter').addEventListener('change', function() {
-        loadEmployeesList(this.value);
-    });
+        // Только после успешного ответа загружаем HTML
+        const response = await fetch('pages/employees.html');
+        container.innerHTML = await response.text();
+
+        // Загружаем данные страницы
+        await loadDepartmentOptions();
+        await loadEmployeesList();
+        await loadDepartmentFilter();
+
+        // Вешаем обработчики
+        document
+            .getElementById('employee-form')
+            .addEventListener('submit', createEmployee);
+
+        document
+            .getElementById('employee-filter')
+            .addEventListener('change', function () {
+                loadEmployeesList(this.value);
+            });
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 async function loadDepartmentOptions() {

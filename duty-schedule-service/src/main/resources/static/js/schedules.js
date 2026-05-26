@@ -3,13 +3,27 @@
  */
 async function loadSchedulesPage() {
     const container = document.getElementById('main-content');
-    const response = await fetch('pages/schedules.html');
-    container.innerHTML = await response.text();
 
-    await loadChiefOptions();
-    await loadSchedulesList();
+    try {
+        // Сначала проверяем доступ к API
+        await apiRequest('duty-groups');
 
-    document.getElementById('schedule-form').addEventListener('submit', createSchedule);
+        // Только потом загружаем HTML
+        const response = await fetch('pages/schedules.html');
+        container.innerHTML = await response.text();
+
+        // Загружаем данные страницы
+        await loadChiefOptions();
+        await loadSchedulesList();
+
+        // Вешаем обработчик
+        document
+            .getElementById('schedule-form')
+            .addEventListener('submit', createSchedule);
+
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 async function loadChiefOptions() {

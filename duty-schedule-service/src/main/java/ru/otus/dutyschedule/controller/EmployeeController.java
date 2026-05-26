@@ -15,7 +15,7 @@ import java.util.List;
  * REST API для управления сотрудниками.
  */
 @RestController
-@RequestMapping("/api/employees")
+    @RequestMapping("/api/employees")
 @RequiredArgsConstructor
 public class EmployeeController {
 
