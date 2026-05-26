@@ -23,20 +23,22 @@
 
 ## Стек
 
-| Технология                  | Назначение                    |
-|-----------------------------|-------------------------------|
-| Java 17                     | Язык                          |
-| Spring Boot 3.5             | Фреймворк                     |
-| Spring Data JPA / Hibernate | Работа с БД                   |
-| Spring Shell                | Консольное управление         |
-| Spring Actuator             | Состояние здоровья приложения |
-| Flyway                      | Миграции                      |
-| PostgreSQL 16               | База данных                   |
-| Docker Compose              | Контейнеризация               |
-| Lombok                      | Упрощение кода                |
-| Maven                       | Сборка                        |
-
----
+| Технология | Назначение |
+|------------|-----------|
+| Java 17 | Язык |
+| Spring Boot 3.5 | Фреймворк |
+| Spring Data JPA / Hibernate | Работа с БД |
+| Spring Security | Безопасность и аутентификация |
+| Spring Shell | Консольное управление |
+| Spring Actuator | Мониторинг и диагностика |
+| Spring Cloud OpenFeign | HTTP-клиент для межсервисного взаимодействия |
+| Resilience4j | Circuit Breaker и Retry |
+| Flyway | Миграции БД |
+| PostgreSQL 16 | База данных |
+| Docker Compose | Контейнеризация |
+| Bootstrap 5 | Фронтенд |
+| Lombok | Упрощение кода |
+| Maven | Сборка |
 
 ## Архитектура
 otus-spring-final-qualification-work/

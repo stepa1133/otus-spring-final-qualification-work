@@ -22,6 +22,10 @@ spring:
     interactive:
       enabled: true
 
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
 server:
   port: 8080
   error:
@@ -49,3 +53,24 @@ logging:
     ru.otus.dutyschedule: DEBUG
     org.hibernate.SQL: DEBUG
     root: WARN
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      notification:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  retry:
+    instances:
+      notification:
+        maxAttempts: 3
+        waitDuration: 1s
+
+notification:
+  service:
+    url: http://localhost:8082
+
+
