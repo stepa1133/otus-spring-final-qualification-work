@@ -1,13 +1,8 @@
 package ru.otus.db.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -21,10 +16,8 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String name;
-
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
 
     @Override
     public String getAuthority() {

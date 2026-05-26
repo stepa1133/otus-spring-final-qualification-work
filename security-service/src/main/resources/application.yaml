@@ -28,6 +28,6 @@ server:
 
 security:
   jwt:
-    lifetime: 300000 # ms
-    public-key-path: classpath:keys/public.pem
-    private-key-path: classpath:keys/private.pem
+    lifetime: 3000000 # ms
+    public-key: classpath:keys/public.pem
+    private-key: classpath:keys/private.pem

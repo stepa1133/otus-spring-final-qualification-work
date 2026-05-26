@@ -30,9 +30,6 @@ public class JwtService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        JwsHeader header = JwsHeader.with(SignatureAlgorithm.RS512)
-                .build();
-
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(user.getUsername())
                 .issuedAt(now)
@@ -41,8 +38,7 @@ public class JwtService {
                 .build();
 
         return jwtEncoder
-                .encode(JwtEncoderParameters.from(header, claims))
+                .encode(JwtEncoderParameters.from(claims))
                 .getTokenValue();
     }
-
 }

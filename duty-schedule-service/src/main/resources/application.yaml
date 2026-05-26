@@ -73,4 +73,6 @@ notification:
   service:
     url: http://localhost:8082
 
-
+security:
+  jwt:
+    public-key: classpath:keys/public.pem

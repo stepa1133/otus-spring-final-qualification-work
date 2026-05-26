@@ -8,6 +8,8 @@ const API_URL = 'http://localhost:8080/api';
  * @param {object} body - тело запроса (для POST/PUT/PATCH)
  * @returns {Promise} - ответ от сервера
  */
+const JWT = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3OTgwMzM2NiwiaWF0IjoxNzc5ODAzMDY2LCJyb2xlcyI6WyJST0xFX0NISUVGIl19.qNIK1HrvAzDlGCEMBPUUNOpGqImoqKmtEuLcjhMAKQqGh-HJaAQTIZNVVqXQvcTE0_iitBXOJTW7WIY16vY4ZIzVyMXEKL-lutDAg8EyqGvcAuH9wAROpC7FTWR_17k1US8XmYnwSlMPEB-dx1IHPsbi6wHoJ-dpmsQPQ3vwPbJLyOP8HenmZZyvxt2xdw1ooYHKoe-13_Ry9gCg-Zxq1HjZVCM7b9KR-LHtRn0q9hRZ7l7TpwiEtFrzIYVOg6nGY6l0_0Iao5w-O8naKatyZ4d31DXLU2HF_FJv4Lxs1KVV6Ons_ul4BzzQw-6vrHcWckNXNc_LJRsNQf2T-dZtkw";
+
 async function apiRequest(endpoint, method = 'GET', body = null) {
     const url = `${API_URL}/${endpoint}`;
 
@@ -15,6 +17,7 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
         method: method,
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JWT}`
         }
     };
 

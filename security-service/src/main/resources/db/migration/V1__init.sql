@@ -1,12 +1,12 @@
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(16) NOT NULL UNIQUE,
+    username VARCHAR(32) NOT NULL UNIQUE,
     password TEXT NOT NULL
 );
 
 CREATE TABLE roles (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(32) NOT NULL UNIQUE
 );
 
 CREATE TABLE users_roles (
@@ -27,5 +27,11 @@ CREATE TABLE users_roles (
 );
 
 INSERT INTO roles (name) VALUES
-    ('ROLE_EMPLOYEE'),
-    ('ROLE_CHIEF');
+    ('ROLE_CHIEF'),
+    ('ROLE_EMPLOYEE');
+
+INSERT INTO users (username, password) VALUES
+    ('admin', '$2a$10$96JpXHQiYvPseeElHOgPhOrg8bb0NZ5Lz55AYqAuALvYSJjeLLOkS');
+
+INSERT INTO users_roles (user_id, role_id) VALUES
+    (1, 1);
