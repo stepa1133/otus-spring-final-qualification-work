@@ -27,7 +27,7 @@ services:
     #    "порт_на_хосте:порт_в_контейнере"
     #    5432 — стандартный порт PostgreSQL
     ports:
-      - "5431:5432"
+      - "5432:5432"
 
     # 9. Монтирование томов (папок)
     volumes:
@@ -65,7 +65,8 @@ services:
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update           # ← ДОБАВЬ ЭТО
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate           # ← ДОБАВЬ ЭТО
+      SPRING_FLYWAY_ENABLED: "true"
       SERVER_PORT: "8080"
     ports:
       - "8080:8080"
@@ -127,10 +128,10 @@ services:
 
     # Переменные окружения для подключения к БД
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/notification_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/duty_schedule_db
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SERVER_PORT: "8080"
 
     # Проброс порта приложения (внешний 8082 → внутренний 8080)

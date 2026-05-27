@@ -35,19 +35,15 @@ public class SecurityConfiguration {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/employees/**")
-                            .hasAnyRole("EMPLOYEE", "CHIEF")
-
-                        .requestMatchers("/api/departments/**")
-                            .hasRole("CHIEF")
-                        .requestMatchers("/api/duties/**")
-                            .hasRole("CHIEF")
-                        .requestMatchers("/api/duty-groups/**")
-                            .hasRole("CHIEF")
-
-                        .requestMatchers("/api/absences/**")
-                            .hasRole("ADMIN")
-
+                        .requestMatchers(
+                                "/", "/index.html", "/login.html", "/js/**", "/css/**", "/pages/**",
+                                "/actuator/**"
+                        ).permitAll()
+                        .requestMatchers("/api/employees/**").hasAnyRole("EMPLOYEE", "CHIEF")
+                        .requestMatchers("/api/departments/**").hasRole("CHIEF")
+                        .requestMatchers("/api/duties/**").hasRole("CHIEF")
+                        .requestMatchers("/api/duty-groups/**").hasRole("CHIEF")
+                        .requestMatchers("/api/absences/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();
