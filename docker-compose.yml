@@ -100,7 +100,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/security_db
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       # Порт самого сервиса (если нужно переопределить)
       SERVER_PORT: "8080"
 
