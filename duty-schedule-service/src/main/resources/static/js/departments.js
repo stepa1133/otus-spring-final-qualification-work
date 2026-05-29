@@ -4,10 +4,26 @@
  */
 async function loadDepartmentsPage() {
     const container = document.getElementById('main-content');
+    const role = localStorage.getItem('user_role');
 
     // Загружаем HTML-шаблон
     const response = await fetch('pages/departments.html');
     container.innerHTML = await response.text();
+
+    // Проверяем роль
+    if (role !== 'CHIEF' && role !== 'ADMIN') {
+        document.getElementById('departments-message').innerHTML = `
+            <div class="alert alert-warning">
+                <h4>Доступ ограничен</h4>
+                <p>Этот раздел доступен только начальнику и администратору.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Показываем контент
+    const content = document.getElementById('departments-content');
+    if (content) content.style.display = 'block';
 
     // Загружаем список отделов
     await loadDepartmentsList();

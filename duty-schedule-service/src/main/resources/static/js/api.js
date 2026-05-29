@@ -3,13 +3,10 @@ const API_URL = 'http://localhost:8080/api';
 
 /**
  * Универсальная функция для запросов к API.
- * @param {string} endpoint - путь после /api/ (например, 'departments')
- * @param {string} method - GET, POST, PUT, PATCH, DELETE
- * @param {object} body - тело запроса (для POST/PUT/PATCH)
- * @returns {Promise} - ответ от сервера
  */
 async function apiRequest(endpoint, method = 'GET', body = null) {
     const url = `${API_URL}/${endpoint}`;
+    const token = localStorage.getItem('jwt_token');
 
     const options = {
         method: method,
@@ -18,6 +15,10 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
         }
     };
 
+    if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+    }
+
     if (body) {
         options.body = JSON.stringify(body);
     }
@@ -25,12 +26,25 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
     try {
         const response = await fetch(url, options);
 
+        // 401 — токен просрочен или невалиден → на логин
+        if (response.status === 401) {
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user_role');
+            localStorage.removeItem('username');
+            window.location.href = '/pages/login.html';
+            return;
+        }
+
+        // 403 — нет прав, просто ошибка
+        if (response.status === 403) {
+            throw new Error('Доступ запрещён');
+        }
+
         if (!response.ok) {
             const error = await response.json();
             throw new Error(error.message || `Ошибка ${response.status}`);
         }
 
-        // Если ответ пустой (например, DELETE)
         if (response.status === 204) {
             return null;
         }
@@ -42,9 +56,6 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
     }
 }
 
-/**
- * Показать сообщение об ошибке на странице.
- */
 function showError(containerId, message) {
     const container = document.getElementById(containerId);
     if (container) {
@@ -57,9 +68,6 @@ function showError(containerId, message) {
     }
 }
 
-/**
- * Показать сообщение об успехе на странице.
- */
 function showSuccess(containerId, message) {
     const container = document.getElementById(containerId);
     if (container) {

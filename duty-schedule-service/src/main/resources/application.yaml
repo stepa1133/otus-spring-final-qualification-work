@@ -72,5 +72,6 @@ resilience4j:
 notification:
   service:
     url: http://localhost:8082
-
+jwt:
+  secret: mySuperSecretKeyForJWT12345678901234567890
 
