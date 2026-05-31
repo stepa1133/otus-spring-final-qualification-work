@@ -109,9 +109,6 @@
 			<artifactId>resilience4j-feign</artifactId>
 			<version>2.2.0</version>
 		</dependency>
-
-		<!-- Spring Boot Actuator (уже есть) -->
-		<!-- Нужен для метрик Resilience4j -->
 	</dependencies>
 
 	<build>

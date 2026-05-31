@@ -29,16 +29,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse create(EmployeeRequest request) {
-        // Проверка на дубликат email
         if (employeeRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateEmailException(request.getEmail());
         }
 
-        // Найти отдел
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new DepartmentNotFoundException(request.getDepartmentId()));
 
-        // Пока без кодирования пароля (добавим позже, когда будет security)
         Employee employee = employeeMapper.toEntity(request, department, request.getPassword());
         Employee saved = employeeRepository.save(employee);
         return employeeMapper.toResponse(saved);

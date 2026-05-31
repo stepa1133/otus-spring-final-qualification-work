@@ -18,5 +18,5 @@ public class DepartmentResponse {
     private String name;
     private boolean special;
     private boolean active;
-    private String chiefFullName;  // ФИО начальника (если есть)
+    private String chiefFullName;
 }

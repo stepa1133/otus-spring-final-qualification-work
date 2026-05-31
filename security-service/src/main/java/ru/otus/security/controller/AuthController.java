@@ -1,12 +1,15 @@
 package ru.otus.security.controller;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.otus.security.dto.AuthResponse;
 import ru.otus.security.dto.LoginRequest;
 import ru.otus.security.dto.RegisterRequest;
 import ru.otus.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")

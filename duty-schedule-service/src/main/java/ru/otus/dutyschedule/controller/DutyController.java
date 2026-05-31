@@ -3,7 +3,13 @@ package ru.otus.dutyschedule.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.otus.dutyschedule.dto.request.CommentRequest;
 import ru.otus.dutyschedule.dto.response.DutyResponse;
 import ru.otus.dutyschedule.enums.DutyStatus;
@@ -29,9 +35,7 @@ public class DutyController {
     /** Мои дежурства (для текущего сотрудника) */
     @GetMapping("/my")
     public ResponseEntity<List<DutyResponse>> getMyDuties(@RequestParam Long employeeId) {
-        // В будущем employeeId будет браться из JWT-токена
-        List<Duty> duties = dutyRepository.findAllByEmployee(
-                new ru.otus.dutyschedule.model.Employee()); // временная заглушка
+        List<Duty> duties = dutyRepository.findAllByEmployee(new ru.otus.dutyschedule.model.Employee());
         // TODO: исправить, когда будет security
         return ResponseEntity.ok(List.of());
     }
@@ -44,7 +48,7 @@ public class DutyController {
         Duty duty = dutyRepository.findById(id)
                 .orElseThrow(() -> new DutyGroupNotFoundException(id));
         duty.setComment(request.getComment());
-        duty.setStatus(DutyStatus.SUBSTITUTED); // помечаем как требующий замены
+        duty.setStatus(DutyStatus.SUBSTITUTED);
         dutyRepository.save(duty);
         return ResponseEntity.ok(dutyMapper.toResponse(duty));
     }
