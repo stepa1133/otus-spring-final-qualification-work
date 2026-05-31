@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: security-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/security_db}
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Hibernate только проверяет, что схема соответствует entity
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8081
+
+jwt:
+  secret: mySuperSecretKeyForJWT12345678901234567890
+  expiration: 86400000
+
+logging:
+  level:
+    ru.otus.security: DEBUG

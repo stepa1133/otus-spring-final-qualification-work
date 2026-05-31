@@ -1,32 +1,69 @@
 <div id="departments-page">
     <h2>Управление отделами</h2>
 
-    <!-- Сообщения -->
     <div id="departments-message"></div>
 
-    <!-- Форма создания отдела -->
-    <div class="card mb-4">
-        <div class="card-header">Создать новый отдел</div>
-        <div class="card-body">
-            <form id="department-form">
-                <div class="mb-3">
-                    <label for="dept-name" class="form-label">Название отдела</label>
-                    <input type="text" class="form-control" id="dept-name" required>
-                </div>
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="dept-special">
-                    <label class="form-check-label" for="dept-special">Особый отдел (ежедневный дежурный)</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Создать</button>
-            </form>
+    <div id="departments-content" style="display: none;">
+        <div class="card mb-4">
+            <div class="card-header">Создать новый отдел</div>
+            <div class="card-body">
+                <form id="department-form">
+                    <div class="mb-3">
+                        <label for="dept-name" class="form-label">Название отдела</label>
+                        <input type="text" class="form-control" id="dept-name" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="dept-special">
+                        <label class="form-check-label" for="dept-special">Особый отдел (ежедневный дежурный)</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Создать</button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Список отделов -->
-    <div class="card">
-        <div class="card-header">Список отделов</div>
-        <div class="card-body">
-            <div id="departments-list">Загрузка...</div>
+        <div class="card">
+            <div class="card-header">Список отделов</div>
+            <div class="card-body">
+                <div id="departments-list">Загрузка...</div>
+            </div>
         </div>
     </div>
 </div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+
+<script>
+    // Проверяем токен
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+        window.location.href = '/pages/login.html';
+    }
+
+    // Проверяем роль
+    const role = localStorage.getItem('user_role');
+
+    if (role === 'CHIEF' || role === 'ADMIN') {
+        document.getElementById('departments-content').style.display = 'block';
+        loadDepartments();
+    } else {
+        document.getElementById('departments-message').innerHTML = `
+            <div class="alert alert-warning">
+                <h4>Доступ ограничен</h4>
+                <p>Этот раздел доступен только начальнику и администратору.</p>
+                <a href="/pages/employee-dashboard.html" class="btn btn-primary">Перейти на мою страницу</a>
+            </div>
+        `;
+    }
+
+    async function loadDepartments() {
+        try {
+            const departments = await apiRequest('departments', 'GET');
+            document.getElementById('departments-list').innerHTML =
+                departments.map(d => `<p>${d.name} ${d.special ? '⭐' : ''}</p>`).join('');
+        } catch (error) {
+            document.getElementById('departments-list').innerHTML =
+                `<div class="alert alert-danger">${error.message}</div>`;
+        }
+    }
+</script>

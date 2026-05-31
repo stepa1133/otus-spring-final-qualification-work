@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Система управления графиками дежурств</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script>
+        const role = localStorage.getItem('user_role');
+        const token = localStorage.getItem('jwt_token');
+
+        if (!token) {
+            window.location.href = '/pages/login.html';
+        }
+
+        if (role === 'EMPLOYEE') {
+            window.location.href = '/pages/employee-dashboard.html';
+        }
+    </script>
 </head>
 <body>
 
@@ -32,6 +45,10 @@
                     <a class="nav-link" href="#" data-page="employee-dashboard">Сотруднику</a>
                 </li>
             </ul>
+            <div class="ms-auto">
+                <span class="navbar-text me-3" id="user-info"></span>
+                <button class="btn btn-outline-light btn-sm" onclick="logout()">Выйти</button>
+            </div>
         </div>
     </div>
 </nav>
@@ -41,6 +58,7 @@
     <p>Выберите раздел в меню для начала работы.</p>
 </div>
 
+<script src="js/auth.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/api.js"></script>
 <script src="js/departments.js"></script>
@@ -49,6 +67,9 @@
 <script src="js/schedules.js"></script>
 <script src="js/employee-dashboard.js"></script>
 <script>
+    document.getElementById('user-info').textContent =
+        localStorage.getItem('username') + ' (' + localStorage.getItem('user_role') + ')';
+
     document.getElementById('nav-menu').addEventListener('click', function(e) {
         if (e.target.tagName === 'A' && e.target.dataset.page) {
             e.preventDefault();
