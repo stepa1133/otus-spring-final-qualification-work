@@ -55,9 +55,9 @@ public class DutyGroupController {
         return ResponseEntity.ok(dutyGroupService.getAllActive());
     }
 
-    /** Активировать график (DRAFT → ACTIVE) */
-    @PatchMapping("/{id}/activate")
-    public ResponseEntity<DutyGroupResponse> activate(@PathVariable Long id) {
-        return ResponseEntity.ok(dutyGroupService.activate(id));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        dutyGroupService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

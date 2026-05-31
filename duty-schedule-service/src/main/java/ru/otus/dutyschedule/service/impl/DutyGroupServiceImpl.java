@@ -18,6 +18,7 @@ import ru.otus.dutyschedule.repository.DutyRepository;
 import ru.otus.dutyschedule.repository.EmployeeRepository;
 import ru.otus.dutyschedule.service.DutyGroupService;
 import ru.otus.dutyschedule.service.DutyScheduleGenerator;
+import ru.otus.dutyschedule.service.NotificationGateway;
 
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class DutyGroupServiceImpl implements DutyGroupService {
     private final EmployeeRepository employeeRepository;
     private final DutyGroupMapper dutyGroupMapper;
     private final DutyScheduleGenerator dutyScheduleGenerator;
+    private final NotificationGateway notificationGateway;
+
 
     @Override
     @Transactional
@@ -58,6 +61,8 @@ public class DutyGroupServiceImpl implements DutyGroupService {
         // Генерируем новые
         List<Duty> duties = dutyScheduleGenerator.generate(dutyGroup);
         dutyGroup.getDuties().addAll(duties);
+
+        notificationGateway.sendDutyNotifications(duties);
 
         dutyGroupRepository.save(dutyGroup);
         log.info("График '{}' сгенерирован, {} дежурств", dutyGroup.getName(), duties.size());
@@ -90,8 +95,8 @@ public class DutyGroupServiceImpl implements DutyGroupService {
 
     @Override
     public List<DutyGroupResponse> getAllActive() {
-        List<DutyGroupStatus> activeStatuses = List.of(DutyGroupStatus.DRAFT, DutyGroupStatus.ACTIVE);
-        return dutyGroupRepository.findAllByStatusInOrderByStartDateDesc(activeStatuses)
+        List<DutyGroupStatus> allStatuses = List.of(DutyGroupStatus.DRAFT, DutyGroupStatus.ACTIVE);
+        return dutyGroupRepository.findAllByStatusInOrderByStartDateDesc(allStatuses)
                 .stream()
                 .map(dutyGroupMapper::toResponse)
                 .toList();
@@ -99,15 +104,10 @@ public class DutyGroupServiceImpl implements DutyGroupService {
 
     @Override
     @Transactional
-    public DutyGroupResponse activate(Long id) {
+    public void delete(Long id) {
         DutyGroup dutyGroup = findEntityById(id);
-        if (dutyGroup.getDuties().isEmpty()) {
-            throw new IllegalStateException("Нельзя активировать график без дежурств. Сначала сгенерируйте.");
-        }
-        dutyGroup.setStatus(DutyGroupStatus.ACTIVE);
-        dutyGroupRepository.save(dutyGroup);
-        log.info("График '{}' активирован", dutyGroup.getName());
-        return dutyGroupMapper.toResponse(dutyGroup);
+        dutyGroupRepository.delete(dutyGroup);
+        log.info("График '{}' удалён", dutyGroup.getName());
     }
 
     @Override

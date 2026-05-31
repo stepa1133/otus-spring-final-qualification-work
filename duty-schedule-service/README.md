@@ -28,14 +28,17 @@
 | Java 17 | Язык |
 | Spring Boot 3.5 | Фреймворк |
 | Spring Data JPA / Hibernate | Работа с БД |
+| Spring Security | Безопасность и аутентификация |
 | Spring Shell | Консольное управление |
-| Flyway | Миграции |
+| Spring Actuator | Мониторинг и диагностика |
+| Spring Cloud OpenFeign | HTTP-клиент для межсервисного взаимодействия |
+| Resilience4j | Circuit Breaker и Retry |
+| Flyway | Миграции БД |
 | PostgreSQL 16 | База данных |
 | Docker Compose | Контейнеризация |
+| Bootstrap 5 | Фронтенд |
 | Lombok | Упрощение кода |
 | Maven | Сборка |
-
----
 
 ## Архитектура
 otus-spring-final-qualification-work/
@@ -189,3 +192,45 @@ schedule-reschedule --groupId ID
 schedule-list
 Показывает список всех графиков.
 Пример: schedule-list
+
+
+## Spring Boot Actuator
+
+Для мониторинга и диагностики подключён Spring Boot Actuator.
+
+### Доступные эндпоинты
+
+| URL | Описание |
+|-----|----------|
+| `/actuator` | Список всех доступных эндпоинтов |
+| `/actuator/health` | Статус приложения, БД и зависимостей |
+| `/actuator/info` | Информация о приложении |
+| `/actuator/metrics` | Метрики JVM, HTTP-запросов, БД |
+| `/actuator/flyway` | Статус и история миграций Flyway |
+| `/actuator/beans` | Список всех Spring-бинов |
+| `/actuator/mappings` | Все URL-маппинги контроллеров |
+| `/actuator/env` | Переменные окружения и настройки |
+| `/actuator/loggers` | Уровни логирования (чтение и изменение) |
+
+### Примеры запросов
+
+```bash
+# Статус приложения
+curl http://localhost:8080/actuator/health
+
+# Статус миграций
+curl http://localhost:8080/actuator/flyway
+
+# Метрики HTTP-запросов
+curl http://localhost:8080/actuator/metrics/http.server.requests
+
+# Все маппинги
+curl http://localhost:8080/actuator/mappings
+
+# Список бинов
+curl http://localhost:8080/actuator/beans
+
+# Изменить уровень логирования
+curl -X POST http://localhost:8080/actuator/loggers/ru.otus.dutyschedule \
+  -H "Content-Type: application/json" \
+  -d '{"configuredLevel": "TRACE"}'

@@ -1,9 +1,11 @@
 spring:
+  info:
+    app:
+      name: "Система управления графиками дежурств"
+      version: "1.0.0"
+      description: "Дипломный проект OTUS Spring"
   application:
     name: duty-schedule-service
-  shell:
-    interactive:
-      enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/duty_schedule_db
     username: admin
@@ -11,24 +13,64 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  shell:
+    interactive:
+      enabled: true
+
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
 server:
   port: 8080
+  error:
+    include-stacktrace: always
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers,env,flyway,beans,mappings
+  endpoint:
+    health:
+      show-details: always
 
 logging:
+  file:
+    path: logs
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      max-file-size: 10MB
+      max-history: 7
   level:
     ru.otus.dutyschedule: DEBUG
     org.hibernate.SQL: DEBUG
+    root: WARN
 
-#  flyway:
-#    enabled: false
-##    enabled: true
-##    baseline-on-migrate: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      notification:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  retry:
+    instances:
+      notification:
+        maxAttempts: 3
+        waitDuration: 1s
+
+notification:
+  service:
+    url: http://localhost:8082
+
+
