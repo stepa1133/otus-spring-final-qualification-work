@@ -1,11 +1,10 @@
-package ru.otus.dutyschedule.service;
+package ru.otus.dutyschedule.client;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.otus.dutyschedule.client.NotificationFeignClient;
 import ru.otus.dutyschedule.dto.notification.NotificationRequest;
 import ru.otus.dutyschedule.model.Duty;
 import ru.otus.dutyschedule.model.Employee;
@@ -53,6 +52,5 @@ public class NotificationGateway {
                 duty.getEmployee().getFullName(),
                 duty.getEmployee().getEmail(),
                 t.getMessage());
-        // Можно сохранить в локальную таблицу для повторной отправки позже
     }
 }

@@ -18,7 +18,7 @@ import ru.otus.dutyschedule.repository.DutyRepository;
 import ru.otus.dutyschedule.repository.EmployeeRepository;
 import ru.otus.dutyschedule.service.DutyGroupService;
 import ru.otus.dutyschedule.service.DutyScheduleGenerator;
-import ru.otus.dutyschedule.service.NotificationGateway;
+import ru.otus.dutyschedule.client.NotificationGateway;
 
 import java.util.List;
 

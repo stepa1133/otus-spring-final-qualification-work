@@ -2,18 +2,23 @@ package ru.otus.dutyschedule.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.otus.dutyschedule.client.SecurityFeignClient;
 import ru.otus.dutyschedule.dto.request.EmployeeRequest;
 import ru.otus.dutyschedule.dto.response.EmployeeResponse;
 import ru.otus.dutyschedule.service.EmployeeService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST API для управления сотрудниками.
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/employees")
 @RequiredArgsConstructor
@@ -21,11 +26,26 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
+    private final SecurityFeignClient securityClient;
+
     /** Зарегистрировать нового сотрудника */
     @PostMapping
-    public ResponseEntity<EmployeeResponse> create(@Valid @RequestBody EmployeeRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(employeeService.create(request));
+    public ResponseEntity<EmployeeResponse> create(@Valid @RequestBody EmployeeRequest request,
+                                                   @RequestHeader("Authorization") String authHeader) {
+        EmployeeResponse response = employeeService.create(request);
+
+        // Регистрируем в security-service
+        try {
+            Map<String, String> securityRequest = new HashMap<>();
+            securityRequest.put("username", request.getEmail());
+            securityRequest.put("password", request.getPassword());
+            securityRequest.put("role", "EMPLOYEE");
+            securityClient.registerInSecurityService(securityRequest, authHeader);
+        } catch (Exception e) {
+
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /** Получить сотрудника по ID */
