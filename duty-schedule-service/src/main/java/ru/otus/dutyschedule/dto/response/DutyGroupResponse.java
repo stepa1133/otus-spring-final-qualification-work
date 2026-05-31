@@ -25,5 +25,5 @@ public class DutyGroupResponse {
     private LocalDate endDate;
     private DutyGroupStatus status;
     private String createdByFullName;
-    private List<DutyResponse> duties;   // вложенный список дежурств
+    private List<DutyResponse> duties;
 }
