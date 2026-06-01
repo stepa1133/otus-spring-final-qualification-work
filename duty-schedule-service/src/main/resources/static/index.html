@@ -70,6 +70,15 @@
     document.getElementById('user-info').textContent =
         localStorage.getItem('username') + ' (' + localStorage.getItem('user_role') + ')';
 
+    // Добавляем ссылку на Actuator для ADMIN
+    if (localStorage.getItem('user_role') === 'ADMIN') {
+        document.getElementById('nav-menu').innerHTML += `
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="actuator">Actuator</a>
+            </li>
+        `;
+    }
+
     document.getElementById('nav-menu').addEventListener('click', function(e) {
         if (e.target.tagName === 'A' && e.target.dataset.page) {
             e.preventDefault();
@@ -85,12 +94,63 @@
                 loadSchedulesPage();
             } else if (page === 'employee-dashboard') {
                 loadEmployeeDashboardPage();
+            } else if (page === 'actuator') {
+                loadActuatorPage();
             } else {
                 document.getElementById('main-content').innerHTML =
                     `<h2>Раздел "${page}" в разработке</h2>`;
             }
         }
     });
+
+    // Функция загрузки Actuator
+    async function loadActuatorPage() {
+        const container = document.getElementById('main-content');
+        const token = localStorage.getItem('jwt_token');
+
+        container.innerHTML = `
+            <h2>Actuator Endpoints</h2>
+            <div id="actuator-content">Загрузка...</div>
+        `;
+
+        const endpoints = ['health', 'info', 'metrics', 'flyway', 'beans', 'mappings', 'env'];
+        const actuatorContainer = document.getElementById('actuator-content');
+        let html = '';
+
+        for (const endpoint of endpoints) {
+            try {
+                const response = await fetch(`/actuator/${endpoint}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                html += `
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <strong>/actuator/${endpoint}</strong>
+                        </div>
+                        <div class="card-body">
+                            <pre style="max-height: 400px; overflow-y: auto;">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    </div>`;
+            } catch (e) {
+                html += `
+                    <div class="card mb-3">
+                        <div class="card-header bg-danger text-white">
+                            <strong>/actuator/${endpoint}</strong>
+                        </div>
+                        <div class="card-body text-danger">
+                            Ошибка: ${e.message}
+                        </div>
+                    </div>`;
+            }
+        }
+        actuatorContainer.innerHTML = html;
+    }
 </script>
 
 </body>

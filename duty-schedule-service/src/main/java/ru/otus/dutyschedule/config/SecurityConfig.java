@@ -61,6 +61,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/employees/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/duty-groups/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/departments/**").authenticated()
+                        .requestMatchers("/actuator/**").hasRole("ADMIN")
+                        .requestMatchers("/pages/actuator.html").hasRole("ADMIN")
+
 
                         // API: всё остальное — только CHIEF и ADMIN
                         .requestMatchers("/api/**").hasAnyRole("CHIEF", "ADMIN")

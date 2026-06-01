@@ -71,6 +71,8 @@ services:
       SPRING_FLYWAY_ENABLED: "true"
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SERVER_PORT: "8080"
+      NOTIFICATION_SERVICE_URL: http://notification-service:8080
+      SECURITY_SERVICE_URL: http://security-service:8080
     ports:
       - "8080:8080"
 
@@ -80,7 +82,7 @@ services:
         condition: service_healthy
 
     # Политика перезапуска
-    restart: unless-stopped
+    restart: no
 
   # ============================================
   # SECURITY-SERVICE — сервис аутентификации и авторизации
@@ -147,7 +149,7 @@ services:
         condition: service_healthy
 
     # Политика перезапуска
-    restart: unless-stopped
+    restart: no
 
 # 11. Секция с описанием именованных томов
 volumes:

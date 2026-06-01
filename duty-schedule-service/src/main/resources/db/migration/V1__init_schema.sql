@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS employees (
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(255) NOT NULL CHECK (role IN ('CHIEF', 'EMPLOYEE')),
+    role VARCHAR(255) NOT NULL CHECK (role IN ('CHIEF', 'EMPLOYEE', 'ADMIN')),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     department_id BIGINT,
     PRIMARY KEY (id)

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Actuator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Actuator</a>
+        <div class="ms-auto">
+            <button class="btn btn-outline-light btn-sm" onclick="logout()">Выйти</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2>Actuator Endpoints</h2>
+    <div id="actuator-content">Загрузка...</div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+<script>
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+        window.location.href = '/pages/login.html';
+    }
+
+    async function loadActuator() {
+        const endpoints = ['health', 'info', 'metrics', 'flyway', 'beans', 'mappings'];
+        const container = document.getElementById('actuator-content');
+        let html = '';
+
+        for (const endpoint of endpoints) {
+            try {
+                const response = await fetch(`/actuator/${endpoint}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                html += `<div class="card mb-3">
+                    <div class="card-header">/${endpoint}</div>
+                    <div class="card-body">
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                </div>`;
+            } catch (e) {
+                html += `<div class="card mb-3">
+                    <div class="card-header text-danger">/${endpoint}</div>
+                    <div class="card-body text-danger">Ошибка: ${e.message}</div>
+                </div>`;
+            }
+        }
+        container.innerHTML = html;
+    }
+
+    loadActuator();
+</script>
+</body>
+</html>
