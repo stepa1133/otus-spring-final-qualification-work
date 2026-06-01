@@ -4,6 +4,9 @@
 INSERT INTO employees (full_name, email, password, role, active)
 VALUES ('Петрова Анна Сергеевна', 'anna@company.ru', '123456', 'CHIEF', true);
 
+INSERT INTO employees (full_name, email, password, role, active)
+VALUES ('Степанов Александр Владимирович', 'stepanov@company.ru', '123456', 'ADMIN', true);
+
 -- ============================================
 -- 2. Создаём отделы
 -- ============================================

@@ -6,8 +6,8 @@
 
 -- Начальник
 INSERT INTO users (username, password, role)
-VALUES ('anna@company.ru', '$2a$10$bB/DSzHyVslr6sAn4ZgyD.kBazMcZg1AmTEiPZ9G/2uz6ahEFzTdG', 'CHIEF');
-VALUES ('anna@company.ru', '$2a$10$bB/DSzHyVslr6sAn4ZgyD.kBazMcZg1AmTEiPZ9G/2uz6ahEFzTdG', 'CHIEF');
+VALUES ('anna@company.ru', '$2a$10$bB/DSzHyVslr6sAn4ZgyD.kBazMcZg1AmTEiPZ9G/2uz6ahEFzTdG', 'CHIEF'),
+       ('stepanov@company.ru', '$2a$10$bB/DSzHyVslr6sAn4ZgyD.kBazMcZg1AmTEiPZ9G/2uz6ahEFzTdG', 'ADMIN');
 
 -- Бухгалтерия (особый отдел)
 INSERT INTO users (username, password, role) VALUES
